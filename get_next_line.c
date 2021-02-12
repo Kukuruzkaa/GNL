@@ -6,7 +6,7 @@
 /*   By: ddiakova <ddiakova@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 11:06:53 by ddiakova          #+#    #+#             */
-/*   Updated: 2021/02/11 16:15:59 by ddiakova         ###   ########.fr       */
+/*   Updated: 2021/02/12 16:54:16 by ddiakova         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ int get_next_line(int fd, char **line)
     while ((ret = read(fd, buf, BUF_SIZE)) > 0)
     {   
         (buf[ret] = '\0');
-        lu = ft_strdup(buf);
         i = 0;
+        lu = ft_strdup(buf);
         while (lu[i])
         {
             if (lu[i] == '\n')
@@ -58,9 +58,9 @@ int main ()
 
     fd = open ("file.txt", O_RDONLY);
     get_next_line (fd, &line);
-    printf("%s", line);
+    printf("%s\n", line);
     free(line);
     get_next_line(fd, &line);
-    printf("%s", line);
+    printf("%s\n", line);
     return (0);
 }

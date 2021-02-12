@@ -6,7 +6,7 @@
 /*   By: ddiakova <ddiakova@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/10 09:06:59 by ddiakova          #+#    #+#             */
-/*   Updated: 2021/02/11 16:01:19 by ddiakova         ###   ########.fr       */
+/*   Updated: 2021/02/12 16:54:19 by ddiakova         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,46 @@ int	ft_strlen(const char *s)
 		l++;
 	}
 	return (l);
+}
+
+char	*ft_strchr(const char *s, int c)
+{
+	while (*s)
+	{
+		if (*s == c)
+			return ((char*)s);
+		s++;
+	}
+	if (*s == c)
+		return ((char*)s);
+	return (NULL);
+}
+
+char	*ft_strjoin(char const *s1, char const *s2, size_t size)
+{
+	int		str1len;
+	int		str2len;
+	int		i;
+	int		j;
+	char	*s3;
+
+	if (!s1 || !s2)
+		return (NULL);
+	str1len = ft_strlen(s1);
+	str2len = size;
+	if (!(s3 = (char*)malloc(sizeof(char) * (str1len + str2len + 1))))
+		return (NULL);
+	i = -1;
+	while (i++ < str1len)
+	{
+		s3[i] = s1[i];
+	}
+	j = 0;
+	while (s2[j])
+	{
+		s3[str1len + j] = s2[j];
+		j++;
+	}
+	s3[str1len + str2len] = '\0';
+	return (s3);
 }
