@@ -6,7 +6,7 @@
 /*   By: ddiakova <ddiakova@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 11:06:53 by ddiakova          #+#    #+#             */
-/*   Updated: 2021/02/12 16:54:16 by ddiakova         ###   ########.fr       */
+/*   Updated: 2021/02/13 16:28:58 by ddiakova         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,19 +32,19 @@ int get_next_line(int fd, char **line)
     {   
         (buf[ret] = '\0');
         i = 0;
-        lu = ft_strdup(buf);
-        while (lu[i])
+        lu = ft_strjoin(lu, buf, ret);
+        //printf("lu: %s\n", lu);
+        if ((i = ft_strchr_g(lu, '\n')) >= 0)
         {
-            if (lu[i] == '\n')
-            {
-                *line = ft_substr(lu, 0, i);
-                temp = ft_strdup(&lu[i+1]);
-                free(lu);
-                lu = temp;
-                temp = NULL;
-                break;
-            }
-            i++;
+            *line = ft_substr(lu, 0, i);
+            //printf("line: %s\n", *line);
+            temp = ft_strdup(&lu[i + 1]);
+            //printf("temp: %s\n", temp);
+            free(lu);
+            lu = temp;
+            break;
+            //printf("lu: %s\n", lu);
+            //lu = ft_strdup(&temp[i + 1]);
         }
         return (1);
     }
@@ -55,12 +55,15 @@ int main ()
 {
     int fd;
     char *line;
+    int r;
 
     fd = open ("file.txt", O_RDONLY);
-    get_next_line (fd, &line);
+    while ((r = get_next_line (fd, &line)) >= 0)
+    {   
+        printf("%s\n", line);
+        free(line);
+    }
     printf("%s\n", line);
     free(line);
-    get_next_line(fd, &line);
-    printf("%s\n", line);
     return (0);
 }

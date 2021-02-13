@@ -6,7 +6,7 @@
 /*   By: ddiakova <ddiakova@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/10 09:06:59 by ddiakova          #+#    #+#             */
-/*   Updated: 2021/02/12 16:54:19 by ddiakova         ###   ########.fr       */
+/*   Updated: 2021/02/13 16:14:37 by ddiakova         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ int	ft_strlen(const char *s)
 	int		l;
 
 	l = 0;
+	if (!s)
+		return (l);
 	while (s[l] != '\0')
 	{
 		l++;
@@ -84,6 +86,22 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
+int 	ft_strchr_g(char *s, int c)
+{
+	int 		i;
+	
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == c)
+			return (i);
+		i++;
+	}
+	if (s[i] == c)
+		return (i);
+	return (-1);
+}
+
 char	*ft_strjoin(char const *s1, char const *s2, size_t size)
 {
 	int		str1len;
@@ -92,16 +110,15 @@ char	*ft_strjoin(char const *s1, char const *s2, size_t size)
 	int		j;
 	char	*s3;
 
-	if (!s1 || !s2)
-		return (NULL);
 	str1len = ft_strlen(s1);
 	str2len = size;
-	if (!(s3 = (char*)malloc(sizeof(char) * (str1len + str2len + 1))))
+	if (!(s3 = (char*)malloc(sizeof(char) * (str1len + size + 1))))
 		return (NULL);
-	i = -1;
-	while (i++ < str1len)
+	i = 0;
+	while ( i < str1len)
 	{
 		s3[i] = s1[i];
+		i++;
 	}
 	j = 0;
 	while (s2[j])
@@ -109,6 +126,6 @@ char	*ft_strjoin(char const *s1, char const *s2, size_t size)
 		s3[str1len + j] = s2[j];
 		j++;
 	}
-	s3[str1len + str2len] = '\0';
+	s3[str1len + size] = '\0';
 	return (s3);
 }
