@@ -105,13 +105,11 @@ int 	ft_strchr_g(char *s, int c)
 char	*ft_strjoin(char const *s1, char const *s2, size_t size)
 {
 	int		str1len;
-	int		str2len;
 	int		i;
 	int		j;
 	char	*s3;
 
 	str1len = ft_strlen(s1);
-	str2len = size;
 	if (!(s3 = (char*)malloc(sizeof(char) * (str1len + size + 1))))
 		return (NULL);
 	i = 0;

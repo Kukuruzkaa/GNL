@@ -6,7 +6,7 @@
 /*   By: ddiakova <ddiakova@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/11 11:06:53 by ddiakova          #+#    #+#             */
-/*   Updated: 2021/02/15 12:53:12 by ddiakova         ###   ########.fr       */
+/*   Updated: 2021/02/17 15:12:45 by ddiakova         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,59 +25,60 @@ int get_next_line(int fd, char **line)
     char *temp;
 
 
-    if (!(buf = (char*)malloc(sizeof(char) * (BUF_SIZE + 1))))
-        return (-1);
-        // free buf
     if (fd == -1 || !line || BUF_SIZE <= 0)
+    {   
+        if (lu)
+            free(lu);
         return (-1);
-        // free tout - 'lu'
+    }
+    if (!(buf = (char*)malloc(sizeof(char) * (BUF_SIZE + 1))))
+    {   
+        if (lu)
+            free(lu);
+        return (-1);
+    }
     while ((ret = read(fd, buf, BUF_SIZE)) > 0)
     {   
         (buf[ret] = '\0');
         i = 0;
-        lu = ft_strjoin(lu, buf, ret); // temp = ft_strjoin(lu, buf, ret);
-        if ((i = ft_strchr_g(lu, '\n')) >= 0) // free(lu);
-        {                                      // lu = temp
+        temp = ft_strjoin(lu, buf, ret); 
+        free (lu);
+        lu = temp;
+        if ((i = ft_strchr_g(lu, '\n')) >= 0)
+        {                                    
             *line = ft_substr(lu, 0, i);
             temp = ft_strdup(&lu[i + 1]);
-            if (lu)
-                free(lu);
+            free(lu);
             lu = temp;
             return (1);
         }
     }
+    free(buf);
     if (ret < 0)
-    // free (tout ce aue j'ai malloc)
-        return (-1);
-    else if (ret == 0 && lu == NULL)
-        return (0);
-    // free tout sauf la line
-    if(buf)
-        free (buf);
-    i = 0;
-    while (lu[i++] != '\0')
     {
-        if (lu[i] == '\n')
-        { 
-            *line = ft_substr(lu, 0, i);
-            temp = ft_strdup(&lu[i + 1]);
-            if (lu)
-                free(lu);
-            lu = temp;
-            return (1);
-        }
-        else 
-        {
-            *line = ft_strdup(&lu[i]);
-            lu = 0;
-            return (0);
-        }
+        free(lu);
+        return (-1);
     }
-    return (1);
+    else if (ret == 0 && lu == NULL)
+    {
+        //free(lu);
+        return (0);
+    }
+    //free (buf);
+    i = 0;
+    if (lu[i++])
+    {
+        *line = ft_strdup(&lu[i]);
+        free(lu);
+    }
+    else 
+        *line = ft_strdup(&lu[i]);
+    lu = 0;
+    return (0);
+    
 }
 
-
-/*int main ()
+int main ()
 {
     int fd;
     char *line;
@@ -93,8 +94,8 @@ int get_next_line(int fd, char **line)
     printf("%s\n", line);
     free(line);
     return (0);
-}*/
-int	main(int ac, char **av)
+}
+/*int	main(int ac, char **av)
 {
 	char *line;
 	int fd;
@@ -117,4 +118,4 @@ int	main(int ac, char **av)
     printf("\nTest de LEAKS\n");
 	system("leaks a.out | grep leaked\n"); 
 	return 0;
-}
+}*/
