@@ -52,39 +52,50 @@ int get_next_line(int fd, char **line)
 {
 	int ret;
 	static char *buffer;
-	// char *temp;
 
-	// printf("***START OF GNL***\n");
+	printf("***START OF GNL***\n");
 
-	// printf("line : '%s' buffer : '%s'\n", *line, buffer);
+	printf("line : '%s' buffer : '%s'\n", *line, buffer);
 	*line = NULL;
+	
 	if (fd == -1 || !line || BUFFER_SIZE <= 0)
 	{   
 		if (buffer)
 			free(buffer);
 		return (-1);
 	}
-
+	
 	buffer = update_line_and_buffer(line, buffer);
 	// printf("\n");
 	while (buffer_is_empty(buffer))
 	{
+		// if (buffer == NULL)
+		buffer = (char*)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+		if (buffer == NULL)
+		{
+			return (-1);
+		}
 		// printf("line : '%s' buffer : '%s'\n", *line, buffer);
-		buffer = (char*)calloc(BUFFER_SIZE + 1, sizeof(char));
 		ret = read(fd, buffer, BUFFER_SIZE);
 		// printf("%d\n", ret);
 		// printf("line : '%s' buffer : '%s'\n", *line, buffer);
 		if (ret <= 0)
 		{
 			free(buffer);
+			buffer = NULL;
+			if (line)
+			{
+				free(&line);
+				line = NULL;
+			}
 			return (ret);
 		}
 		buffer = update_line_and_buffer(line, buffer);
-		// printf("line : '%s' buffer : '%s'\n", *line, buffer);
+		printf("line : '%s' buffer : '%s'\n", *line, buffer);
 	}
 	buffer = ft_substr(buffer, 1, BUFFER_SIZE - 1);
-	// printf("line : '%s' buffer : '%s'\n", *line, buffer);
-	// printf("***END OF GNL***\n");
+	printf("line : '%s' buffer : '%s'\n", *line, buffer);
+	printf("***END OF GNL***\n");
 	return (1);
 
 
@@ -172,10 +183,12 @@ int	main(int ac, char **av)
 	{
 		printf("line. %d = %s - [%d]\n", countline, line, ret);
 		free(line);
+		line = NULL;
 		countline++;
 	}
 	printf("line %d = %s - [%d]\n", countline, line, ret);
 	free(line);
+		line = NULL;
 	printf("\nTest de LEAKS\n");
 	system("leaks a.out | grep leaked\n"); 
 	return 0;

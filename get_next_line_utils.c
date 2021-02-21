@@ -57,6 +57,7 @@ char	*ft_substr(char *s, unsigned int start, size_t len)
 	}
 	s2new[j] = '\0';
 	free(s);
+	s =NULL;
 	return (s2new);
 }
 
@@ -103,7 +104,7 @@ int 	ft_strchr_g(char *s, int c)
 	return i;
 }
 
-char	*ft_strjoin(char const *s1, char const *s2, size_t size)
+char	*ft_strjoin(char *s1, char *s2, size_t size)
 {
 	size_t	str1len;
 	size_t	i;
@@ -126,6 +127,8 @@ char	*ft_strjoin(char const *s1, char const *s2, size_t size)
 		j++;
 	}
 	s3[str1len + size] = '\0';
+	free(s1);
+	s1 = NULL;
 	return (s3);
 }
 void    *ft_memset(void *b, int c, size_t len)
