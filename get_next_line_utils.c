@@ -33,7 +33,7 @@ char	*ft_strdup(const char *s1)
 	return (s2);
 }
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char	*ft_substr(char *s, unsigned int start, size_t len)
 {
 	size_t		j;
 	size_t		length;
@@ -56,6 +56,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		j++;
 	}
 	s2new[j] = '\0';
+	free(s);
 	return (s2new);
 }
 
@@ -91,22 +92,22 @@ int 	ft_strchr_g(char *s, int c)
 	int 		i;
 	
 	i = 0;
+	if (s == NULL)
+		return (0);
 	while (s[i])
 	{
 		if (s[i] == c)
 			return (i);
 		i++;
 	}
-	if (s[i] == c)
-		return (i);
-	return (BUFFER_SIZE);
+	return i;
 }
 
 char	*ft_strjoin(char const *s1, char const *s2, size_t size)
 {
-	int		str1len;
-	int		i;
-	int		j;
+	size_t	str1len;
+	size_t	i;
+	size_t	j;
 	char	*s3;
 
 	str1len = ft_strlen(s1);
@@ -126,4 +127,27 @@ char	*ft_strjoin(char const *s1, char const *s2, size_t size)
 	}
 	s3[str1len + size] = '\0';
 	return (s3);
+}
+void    *ft_memset(void *b, int c, size_t len)
+{
+        unsigned int    index;
+        char                    *str;
+
+        str = (char*)b;
+        index = 0;
+        while (index < len)
+        {
+                str[index] = (unsigned char)c;
+                index++;
+        }
+        return (b);
+}
+void    *ft_calloc(size_t count, size_t size)
+{
+        void    *str;
+
+        if (!(str = (void*)malloc(count * size)))
+                return (NULL);
+        ft_memset(str, '\0', count * size);
+        return (str);
 }

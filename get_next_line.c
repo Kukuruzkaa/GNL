@@ -16,42 +16,75 @@
 #include <fcntl.h>
 #include <stdio.h>
 
-void update_line_and_buffer(char **line, char *buffer)
+static char	*update_buffer(char *buffer)
+{
+	int start;
+	
+	start = ft_strchr_g(buffer, '\n');
+	buffer = ft_substr(buffer, start, BUFFER_SIZE - start);
+	return (buffer);
+}
+
+static char *update_line_and_buffer(char **line, char *buffer)
 {	
 	int	i;
 
+	// printf("line1 : '%s' buffer1 : '%s'\n", *line, buffer);
 	i = ft_strchr_g(buffer, '\n');
+	// printf("line2 : '%s' buffer2 : '%s'\n", *line, buffer);
 	*line = ft_strjoin(*line, buffer, i);
+	//printf("line3 : '%s' buffer3 : '%s'\n", *line, buffer);
 	buffer = update_buffer(buffer);
+	//printf("line4 : '%s' buffer4 : '%s'\n", *line, buffer);
+	return (buffer);
 }
+
+static int	buffer_is_empty(char *buffer)
+{
+	if (ft_strlen(buffer) == 0)
+		return (1);
+	else 
+		return (0);
+}
+
 
 int get_next_line(int fd, char **line)
 {
 	int ret;
-	int i;
-	char	 *buf;
 	static char *buffer;
 	// char *temp;
 
+	// printf("***START OF GNL***\n");
+
+	// printf("line : '%s' buffer : '%s'\n", *line, buffer);
 	*line = NULL;
-	if (fd == -1 || !line || BUF_SIZE <= 0)
+	if (fd == -1 || !line || BUFFER_SIZE <= 0)
 	{   
 		if (buffer)
 			free(buffer);
 		return (-1);
 	}
 
-	update_line_and_buffer(line, buffer);
+	buffer = update_line_and_buffer(line, buffer);
+	// printf("\n");
 	while (buffer_is_empty(buffer))
 	{
+		// printf("line : '%s' buffer : '%s'\n", *line, buffer);
+		buffer = (char*)calloc(BUFFER_SIZE + 1, sizeof(char));
 		ret = read(fd, buffer, BUFFER_SIZE);
+		// printf("%d\n", ret);
+		// printf("line : '%s' buffer : '%s'\n", *line, buffer);
 		if (ret <= 0)
 		{
 			free(buffer);
 			return (ret);
 		}
-		update_line_and_buffer(line, buffer);
+		buffer = update_line_and_buffer(line, buffer);
+		// printf("line : '%s' buffer : '%s'\n", *line, buffer);
 	}
+	buffer = ft_substr(buffer, 1, BUFFER_SIZE - 1);
+	// printf("line : '%s' buffer : '%s'\n", *line, buffer);
+	// printf("***END OF GNL***\n");
 	return (1);
 
 
@@ -105,24 +138,25 @@ int get_next_line(int fd, char **line)
 		
 }
 
-int main ()
-{
-	int fd;
-	char *line;
-	int r;
+// int main ()
+// {
+// 	int fd;
+// 	char *line;
+// 	int r;
 
-	fd = open ("mail.txt", O_RDONLY);
-	//get_next_line(fd, &line);
-	while ((r = get_next_line (fd, &line)) > 0)
-	{   
-		printf("%s\n", line);
-		free(line);
-	}
-	printf("%s\n", line);
-	free(line);
-	return (0);
-}
-/*int	main(int ac, char **av)
+// 	fd = open ("file.txt", O_RDONLY);
+// 	//get_next_line(fd, &line);
+// 	while ((r = get_next_line (fd, &line)) > 0)
+// 	{   
+// 		printf("%s\n", line);
+// 		free(line);
+// 	}
+// 	printf("%s\n", line);
+// 		free(line);
+
+// 	return (0);
+// }
+int	main(int ac, char **av)
 {
 	char *line;
 	int fd;
@@ -145,4 +179,4 @@ int main ()
 	printf("\nTest de LEAKS\n");
 	system("leaks a.out | grep leaked\n"); 
 	return 0;
-}*/
+}
