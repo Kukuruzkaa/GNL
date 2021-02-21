@@ -99,7 +99,7 @@ int 	ft_strchr_g(char *s, int c)
 	}
 	if (s[i] == c)
 		return (i);
-	return (-1);
+	return (BUFFER_SIZE);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2, size_t size)
@@ -119,7 +119,7 @@ char	*ft_strjoin(char const *s1, char const *s2, size_t size)
 		i++;
 	}
 	j = 0;
-	while (s2[j])
+	while (j < size)
 	{
 		s3[str1len + j] = s2[j];
 		j++;
