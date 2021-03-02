@@ -19,15 +19,19 @@
 static char	*update_buffer(char *buffer)
 {
 	int start;
+	char *temp;
 	
 	start = ft_strchr_g(buffer, '\n');
-	buffer = ft_substr(buffer, start, BUFFER_SIZE - start);
+	temp = ft_substr(buffer, start, BUFFER_SIZE - start);
+	free (buffer);
+	buffer = temp;
 	return (buffer);
 }
 
 static char *update_line_and_buffer(char **line, char *buffer)
 {	
 	int	i;
+	
 
 	// printf("line1 : '%s' buffer1 : '%s'\n", *line, buffer);
 	i = ft_strchr_g(buffer, '\n');
@@ -53,9 +57,9 @@ int get_next_line(int fd, char **line)
 	int ret;
 	static char *buffer;
 
-	printf("***START OF GNL***\n");
+	//printf("***START OF GNL***\n");
 
-	printf("line : '%s' buffer : '%s'\n", *line, buffer);
+	//printf("line : '%s' buffer : '%s'\n", *line, buffer);
 	*line = NULL;
 	
 	if (fd == -1 || !line || BUFFER_SIZE <= 0)
@@ -66,7 +70,7 @@ int get_next_line(int fd, char **line)
 	}
 	
 	buffer = update_line_and_buffer(line, buffer);
-	// printf("\n");
+	//printf("\n");
 	while (buffer_is_empty(buffer))
 	{
 		// if (buffer == NULL)
@@ -75,78 +79,24 @@ int get_next_line(int fd, char **line)
 		{
 			return (-1);
 		}
-		// printf("line : '%s' buffer : '%s'\n", *line, buffer);
+		//printf("line : '%s' buffer : '%s'\n", *line, buffer);
 		ret = read(fd, buffer, BUFFER_SIZE);
-		// printf("%d\n", ret);
-		// printf("line : '%s' buffer : '%s'\n", *line, buffer);
+		//printf("%d\n", ret);
+		//printf("line : '%s' buffer : '%s'\n", *line, buffer);
 		if (ret <= 0)
 		{
 			free(buffer);
 			buffer = NULL;
-			if (line)
-			{
-				free(&line);
-				line = NULL;
-			}
 			return (ret);
 		}
 		buffer = update_line_and_buffer(line, buffer);
-		printf("line : '%s' buffer : '%s'\n", *line, buffer);
+		//printf("line : '%s' buffer : '%s'\n", *line, buffer);
 	}
 	buffer = ft_substr(buffer, 1, BUFFER_SIZE - 1);
-	printf("line : '%s' buffer : '%s'\n", *line, buffer);
-	printf("***END OF GNL***\n");
-	return (1);
-
-
-
-
-
-	// if (!(buf = (char*)malloc(sizeof(char) * (BUF_SIZE + 1))))
-	// {   
-	//	 if (lu)
-	//		 free(lu);
-	//	 return (-1);
-	// }
-	// while ((ret = read(fd, buf, BUF_SIZE)) > 0)
-	// {   
-	//	 (buf[ret] = '\0');
-	//	 i = 0;
-	//	 temp = ft_strjoin(lu, buf, ret); 
-	//	 free (lu);
-	//	 lu = temp;
-	//	 if ((i = ft_strchr_g(lu, '\n')) >= 0)
-	//	 {
-	//		 *line = ft_substr(lu, 0, i);
-	//		 temp = ft_strdup(&lu[i + 1]);
-	//		 free(lu);
-	//		 lu = temp;
-	//		 return (1);
-	//	 }
-	// }
-	// free(buf);
-	// if (ret < 0)
-	// {
-	//	 free(lu);
-	//	 return (-1);
-	// }
-	// else if (ret == 0 && lu == NULL)
-	// {
-	//	 //free(lu);
-	//	 return (0);
-	// }
-	// //free (buf);
-	// i = 0;
-	// if (lu[i++])
-	// {
-	//	 *line = ft_strdup(&lu[i]);
-	//	 free(lu);
-	// }
-	// else 
-	//	 *line = ft_strdup(&lu[i]);
-	// lu = 0;
-	// return (0);
-		
+	free(buffer);
+	//printf("line : '%s' buffer : '%s'\n", *line, buffer);
+	//printf("***END OF GNL***\n");
+	return (1);	
 }
 
 // int main ()

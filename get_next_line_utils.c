@@ -43,7 +43,7 @@ char	*ft_substr(char *s, unsigned int start, size_t len)
 		return (NULL);
 	j = 0;
 	length = ft_strlen(s);
-	if (!(s2new = (char*)malloc(sizeof(char) * (len + 1))))
+	if (!(s2new = (char*)malloc(sizeof(char) * len + 1)))
 		return (NULL);
 	if (start >= length)
 	{
@@ -56,8 +56,6 @@ char	*ft_substr(char *s, unsigned int start, size_t len)
 		j++;
 	}
 	s2new[j] = '\0';
-	free(s);
-	s =NULL;
 	return (s2new);
 }
 
