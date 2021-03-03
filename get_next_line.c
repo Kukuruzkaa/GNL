@@ -16,31 +16,21 @@
 #include <fcntl.h>
 #include <stdio.h>
 
-static char	*update_buffer(char *buffer)
+void update_buffer(char buffer[BUFFER_SIZE + 1])
 {
 	int start;
-	char *temp;
 	
 	start = ft_strchr_g(buffer, '\n');
-	temp = ft_substr(buffer, start, BUFFER_SIZE - start);
-	free (buffer);
-	buffer = temp;
-	return (buffer);
+	ft_substr(buffer, start, BUFFER_SIZE - start);
 }
 
-static char *update_line_and_buffer(char **line, char *buffer)
+void update_line_and_buffer(char **line, char buffer[BUFFER_SIZE + 1])
 {	
 	int	i;
 	
-
-	// printf("line1 : '%s' buffer1 : '%s'\n", *line, buffer);
 	i = ft_strchr_g(buffer, '\n');
-	// printf("line2 : '%s' buffer2 : '%s'\n", *line, buffer);
 	*line = ft_strjoin(*line, buffer, i);
-	//printf("line3 : '%s' buffer3 : '%s'\n", *line, buffer);
-	buffer = update_buffer(buffer);
-	//printf("line4 : '%s' buffer4 : '%s'\n", *line, buffer);
-	return (buffer);
+	update_buffer(buffer);
 }
 
 static int	buffer_is_empty(char *buffer)
@@ -51,51 +41,27 @@ static int	buffer_is_empty(char *buffer)
 		return (0);
 }
 
-
 int get_next_line(int fd, char **line)
 {
 	int ret;
-	static char *buffer;
+	static char buffer[BUFFER_SIZE + 1];
 
-	//printf("***START OF GNL***\n");
-
-	//printf("line : '%s' buffer : '%s'\n", *line, buffer);
 	*line = NULL;
-	
 	if (fd == -1 || !line || BUFFER_SIZE <= 0)
 	{   
-		if (buffer)
-			free(buffer);
 		return (-1);
 	}
-	
-	buffer = update_line_and_buffer(line, buffer);
-	//printf("\n");
+	update_line_and_buffer(line, buffer);
 	while (buffer_is_empty(buffer))
 	{
-		// if (buffer == NULL)
-		buffer = (char*)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-		if (buffer == NULL)
-		{
-			return (-1);
-		}
-		//printf("line : '%s' buffer : '%s'\n", *line, buffer);
 		ret = read(fd, buffer, BUFFER_SIZE);
-		//printf("%d\n", ret);
-		//printf("line : '%s' buffer : '%s'\n", *line, buffer);
 		if (ret <= 0)
 		{
-			free(buffer);
-			buffer = NULL;
 			return (ret);
 		}
-		buffer = update_line_and_buffer(line, buffer);
-		//printf("line : '%s' buffer : '%s'\n", *line, buffer);
+		update_line_and_buffer(line, buffer);
 	}
-	buffer = ft_substr(buffer, 1, BUFFER_SIZE - 1);
-	free(buffer);
-	//printf("line : '%s' buffer : '%s'\n", *line, buffer);
-	//printf("***END OF GNL***\n");
+	ft_substr(buffer, 1, BUFFER_SIZE - 1); // Retire le char '\n'
 	return (1);	
 }
 
