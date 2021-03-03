@@ -55,8 +55,13 @@ int get_next_line(int fd, char **line)
 	while (buffer_is_empty(buffer))
 	{
 		ret = read(fd, buffer, BUFFER_SIZE);
-		if (ret <= 0)
+		if (ret == 0)
 		{
+			return (ret);
+		}
+		if (ret == -1)
+		{
+			*line = NULL;
 			return (ret);
 		}
 		update_line_and_buffer(line, buffer);
@@ -83,29 +88,30 @@ int get_next_line(int fd, char **line)
 
 // // 	return (0);
 // // }
-// int	main(int ac, char **av)
-// {
-// 	char *line;
-// 	int fd;
-// 	int ret;
-// 	int countline;
 
-// 	countline = 1;
-// 	if (ac == 1)
-// 		fd = 0;
-// 	if (ac >= 2)
-// 		fd = open(av[1], O_RDONLY);
-// 	while ((ret = get_next_line(fd, &line))==1)
-// 	{
-// 		printf("line. %d = %s - [%d]\n", countline, line, ret);
-// 		free(line);
-// 		line = NULL;
-// 		countline++;
-// 	}
-// 	printf("line %d = %s - [%d]\n", countline, line, ret);
-// 	free(line);
-// 		line = NULL;
-// 	printf("\nTest de LEAKS\n");
-// 	system("leaks a.out | grep leaked\n"); 
-// 	return 0;
-// }
+int	main(int ac, char **av)
+{
+	char *line;
+	int fd;
+	int ret;
+	int countline;
+
+	countline = 1;
+	if (ac == 1)
+		fd = 0;
+	if (ac >= 2)
+		fd = open(av[1], O_RDONLY);
+	while ((ret = get_next_line(fd, &line))==1)
+	{
+		printf("line. %d = %s - [%d]\n", countline, line, ret);
+		free(line);
+		line = NULL;
+		countline++;
+	}
+	printf("line %d = %s - [%d]\n", countline, line, ret);
+	free(line);
+		line = NULL;
+	printf("\nTest de LEAKS\n");
+	system("leaks a.out | grep leaked\n"); 
+	return 0;
+}
