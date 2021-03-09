@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
 #include "get_next_line_bonus.h"
 
 int		update_line_and_buffer(char **line, char buffer[BUFFER_SIZE + 1])
